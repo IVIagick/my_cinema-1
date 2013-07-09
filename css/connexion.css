@@ -1,0 +1,62 @@
+.sub-menu h5{
+	line-height:45px;
+	margin: 0;
+	padding: 0;
+	color:rgba(255,255,255,0.8);
+}
+
+form{
+	margin:0 auto;
+	padding: 22px 0 10px 0; 
+	width:220px;
+}
+
+.menu
+{
+	margin-top:200px;
+	width:400px;
+}
+
+.alert{
+	width:351px;
+	margin: 0;
+	border-radius: 0;
+	-moz-border-radius: 0;
+	-webkit-border-radius: 0;
+	background-color: #c21515;
+	border: 0;
+	color: rgba(255,255,255,0.8);
+	text-shadow:1px 1px 0 rgba(0,0,0,0.2);
+}
+
+#where-id{
+	color:rgba(0,0,0,0.5);
+	font-size: 11px;
+	margin: 0 auto;
+}
+
+#where-id-p{
+	text-align: center;
+	margin: 0;
+	padding: 0;
+	width:400px;
+}
+
+#info-id{
+	padding:5px;
+	width:300px;
+	margin: 8px auto 0 auto;
+	background-color: rgba(0,0,0,0.05);
+	border-radius: 4px;
+	-moz-border-radius: 4px;
+	-webkit-border-radius: 4px;
+	animation:opacityanim 1s;
+	-webkit-animation:opacityanim 1s;
+}
+
+#info-id p{
+	padding:0;
+	margin: 10px;
+	font-size: 12px;
+	color: rgba(0,0,0,0.7);
+}
