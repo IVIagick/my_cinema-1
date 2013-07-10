@@ -34,6 +34,20 @@ function getTable($bdd, $table , $page = 0, $tri, $max = 20) {
 	return $tabres;
 }
 
+function getTableWhere($bdd, $table , $name_where, $name) {
+	$table = mysqli_real_escape_string($bdd, $table);
+	$name_where = mysqli_real_escape_string($bdd, $name_where);
+	$name = mysqli_real_escape_string($bdd, $name);
+	$resultat = mysqli_query($bdd, "SELECT * FROM $table WHERE $name_where = \"$name\"");
+	$tabres = array();
+	while($row = mysqli_fetch_assoc($resultat))
+	{
+   		$tabres[] = $row;
+	}
+	mysqli_free_result($resultat);
+	return $tabres;
+}
+
 function getTableAll($bdd, $table, $id , $name_where, $tri, $join, $tabjoin1, $tabjoin2) {
 	$resultat = mysqli_query($bdd, "SELECT * FROM $table LEFT JOIN $join ON $table.$tabjoin1 = $join.$tabjoin2 WHERE $name_where LIKE \"%$id%\" ORDER BY $tri ");
 	$tabres = array();
@@ -62,6 +76,14 @@ function checkTable($bdd, $table, $name, $id , $name_where)
 	$row = mysqli_fetch_assoc($resultat);
 	mysqli_free_result($resultat);
 	return $row[$name];
+}
+
+
+function getInfo($bdd, $table, $name_where, $name) {
+	$resultat = mysqli_query($bdd, "SELECT * FROM $table WHERE $name_where = \"$name\"");
+	$row = mysqli_fetch_assoc($resultat);
+	mysqli_free_result($resultat);
+	return $row;
 }
 
 function checkTableLike($bdd, $table, $name, $id , $name_where)

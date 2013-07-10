@@ -1,12 +1,12 @@
 <?php
-if(isset($_POST['bouton-search']))
+if(isset($_GET['search_bouton']))
 {
-	if(isset($_POST['searchby']) && $_POST['searchby'] > 0 && $_POST['searchby'] < 5)
+	if(isset($_GET['searchby']) && $_GET['searchby'] > 0 && $_GET['searchby'] < 5)
 	{
-		if($_POST['searchby'] == 1)
+		if($_GET['searchby'] == 1)
 		{
 			echo "<h5>Résultat(s) correspondant(s) à votre recherche par nom</h5>";
-			$search = htmlentities($_POST['text']);
+			$search = htmlentities($_GET['text']);
 			$films_search = getFilmsSearch($bdd, $search, "titre");
 			?>
 			<table>
@@ -47,11 +47,11 @@ if(isset($_POST['bouton-search']))
 				echo "</td>";
 				echo "<td class=\"datetab\">";
 				echo $val['date_fin_affiche'];
-				echo "</td>";
 				echo "<td class=\"actions\">";
-				echo "<a href=\"#\" title=\"\"><i class='icon-pencil' ></i></a>
-					<a href=\"#\" title=\"\"><i class='icon-list-alt unset-button'></i></a>
-					<a href=\"index.php?file=ListFilms&amp;del=" . $val['id_film'] . "\" title=\"\"><i class='icon-remove' ></i></a>";
+				echo "<a href=\"index.php?file=Film&amp;id=" . $val['id_film'] . "\" title=\"\"><i class='icon-list-alt unset-button'></i></a>";
+				if(isset($_SESSION['id_job'])) { 
+					echo "<a href=\"index.php?file=ListFilms&amp;del=" . $val['id_film'] . "\" title=\"\"><i class='icon-remove' ></i></a>";
+				}
 				echo "</td>";
 				echo "</tr>";
 				$i++;
@@ -70,10 +70,10 @@ if(isset($_POST['bouton-search']))
 			</table>
 		<?php
 		}
-		else if ($_POST['searchby'] == 2)
+		else if ($_GET['searchby'] == 2)
 		{
 			echo "<h5>Résultat(s) correspondant(s) à votre recherche par genre</h5>";
-			$search = htmlentities($_POST['text']);
+			$search = htmlentities($_GET['text']);
 			$films_search = getTableAll($bdd, "tp_film", $search , "nom", "titre", "tp_genre", "id_genre", "id_genre");	
 			?>
 			<table>
@@ -137,10 +137,10 @@ if(isset($_POST['bouton-search']))
 			</table>
 		<?php
 		}
-		else if ($_POST['searchby'] == 3)
+		else if ($_GET['searchby'] == 3)
 		{
 			echo "<h5>Résultat(s) correspondant(s) à votre recherche par distribution</h5>";
-			$search = htmlentities($_POST['text']);
+			$search = htmlentities($_GET['text']);
 			$films_search = getTableAll($bdd, "tp_film", $search , "nom", "titre", "tp_distrib", "id_distrib", "id_distrib");	
 			?>
 			<table>
@@ -204,10 +204,10 @@ if(isset($_POST['bouton-search']))
 			</table>
 		<?php
 		}
-		else if ($_POST['searchby'] == 4)
+		else if ($_GET['searchby'] == 4)
 		{
 			echo "<h5>Résultat(s) correspondant(s) à votre recherche par date de diffusion</h5>";
-			$search = htmlentities($_POST['text']);
+			$search = htmlentities($_GET['text']);
 			$countfilms = countTable($bdd, "tp_film");	
 			$films_search = getTable($bdd, "tp_film" , 0 , "date_debut_affiche", $countfilms);
 			?>
@@ -226,7 +226,7 @@ if(isset($_POST['bouton-search']))
 			if(count($films_search) != 0)
 			{
 			$i = 0;
-			$searchfilm = htmlentities($_POST['date']);
+			$searchfilm = htmlentities($_GET['date']);
 			foreach($films_search as $val)
 			{
 				
@@ -280,7 +280,7 @@ if(isset($_POST['bouton-search']))
 	else
 	{
 		echo "<h5>Résultat(s) correspondant(s) à votre recherche par nom</h5>";
-			$search = htmlentities($_POST['text']);
+			$search = htmlentities($_GET['text']);
 			$films_search = getFilmsSearch($bdd, $search, "titre");
 			?>
 			<table>
@@ -345,7 +345,7 @@ if(isset($_POST['bouton-search']))
 		<?php
 		
 		echo "<h5>Résultat(s) correspondant(s) à votre recherche par genre</h5>";
-			$search2 = htmlentities($_POST['text']);
+			$search2 = htmlentities($_GET['text']);
 			$films_search = getTableAll($bdd, "tp_film", $search2 , "nom", "titre", "tp_genre", "id_genre", "id_genre");	
 			?>
 			<table>
@@ -410,7 +410,7 @@ if(isset($_POST['bouton-search']))
 		<?php
 
 		echo "<h5>Résultat(s) correspondant(s) à votre recherche par distribution</h5>";
-			$search3 = htmlentities($_POST['text']);
+			$search3 = htmlentities($_GET['text']);
 			$films_search = getTableAll($bdd, "tp_film", $search3 , "nom", "titre", "tp_distrib", "id_distrib", "id_distrib");	
 			?>
 			<table>

@@ -1,6 +1,5 @@
 <?php if(isset($_SESSION['id_job'])) { ?><span class="btn btn-primary add" onClick="addabo('add');" >Ajouter un genre</span> <?php } ?>
-<?php if(isset($_SESSION['id_job'])) { ?>
-<?php
+<?php if(isset($_SESSION['id_job'])) { 
 // Suppression
 if(!empty($_GET['del']) || (isset($_GET['del']) && $_GET['del'] == 0) )
 {

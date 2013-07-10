@@ -61,3 +61,11 @@ function avis(div,div2){
         $("#avis-em").css("display","block");
       }
      });
+
+function avisBloc(block,none)
+{
+	document.getElementById(none).style.display = 'none';
+	document.getElementById(block).style.display = 'block';
+	document.getElementById(block + "-btn").className = "btn btn-primary";
+	document.getElementById(none + "-btn").className = "btn ";
+}

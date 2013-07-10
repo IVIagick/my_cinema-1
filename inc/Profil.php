@@ -1,15 +1,17 @@
 <?php
  
 if(!isset($_SESSION['id_job'])) {
-   header('Location: 404.php');
+   if(!empty($_GET['id']) && $_SESSION['id'] != $_GET['id'])
+   {
+      header('Location: index.php?file=404');
+   }
 }
 
 if (isset($_GET['id']))
 {
    $id = $_GET['id'];
-   $user = checkTable($bdd, "tp_membre", "id_membre", $id , "id_membre");
-
-   if ( !isset($user) )
+   $user = checkTable($bdd, "tp_membre", "id_fiche_perso", $id , "id_fiche_perso");
+   if ( empty($user) )
    {
       header("Location: index.php?page=404");
          exit;
@@ -20,11 +22,11 @@ else
       header("Location: index.php?page=404");
          exit; 
 }
-$members_list = getTableAll2($bdd, "tp_membre", $id , "id_membre", "id_membre", "tp_fiche_personne", "id_fiche_perso", "id_perso"); // Récupération des infos users
+$members_list = getTableAll2($bdd, "tp_membre", $id , "id_fiche_perso", "id_membre", "tp_fiche_personne", "id_fiche_perso", "id_perso"); // Récupération des infos users
 $countabo = countTable($bdd, "tp_abonnement");
 $abo_list = getTable($bdd, "tp_abonnement", 0, "id_abo", $countabo ); // Récupération de la liste d'abonnements
 $countfilms = countTable($bdd, "tp_historique_membre");
-$films_list = getTable($bdd, "tp_historique_membre WHERE id_membre =" . $id, 0, "date DESC", $countfilms ); // Récupération de la liste de films
+$films_list = getTable($bdd, "tp_historique_membre WHERE id_membre =" . checkTable($bdd, "tp_membre", "id_membre" , $_GET['id'], "id_fiche_perso"), 0, "date DESC", $countfilms ); // Récupération de la liste de films
 ?>
 <span class="btn btn-primary add" onClick="addabo('add');">Modifier le membre</span>
 <div class="contain" id="add" style="<?php if(isset($_POST['bouton-add'])){ echo "display:block"; }else{ echo "display:none"; }?>">
@@ -49,8 +51,6 @@ if(isset($_POST['bouton-add']))
             $cpostal= htmlentities($_POST['cpostal']);
             if(!empty($_POST['password'])) { $password = MD5(SHA1($_POST['password'])); } else { $password = $members_list['0']['password'];};
             $ville= htmlentities($_POST['ville']);
-            $abo= abs(intval($_POST['abo']));
-            $date_abo= htmlentities($_POST['date_abo']);
             if(!empty($_POST['abo'])){ if($date_abo == "0000-00-00 00:00:00" || $date_abo == ""){
                echo "<div class=\"alert alert-error\">
                   <button type=\"button\" class=\"close\" data-dismiss=\"alert\">&times;</button>
@@ -61,15 +61,33 @@ if(isset($_POST['bouton-add']))
             }
             $pays= htmlentities($_POST['pays']);
             $id_perso = $members_list['0']['id_perso'];
+            if(empty($_SESSION['id_job'])) {
+               $abo = $members_list['0']['id_abo'];
+               $date_abo = $members_list['0']['date_abo'];
+            }
+            else
+            {
+               $abo= abs(intval($_POST['abo']));
+               $date_abo= htmlentities($_POST['date_abo']);
+            }
             if(empty($error))
             {
 
                 editMember($bdd, $nom, $prenom, $mail,$password, $date_naissance, $adresse, $ville, $pays, $cpostal,$id_perso);
                 editMemberAbo($bdd, $abo ,$id_perso, $date_abo);
+                if(isset($_SESSION['id_job'])) { 
                 echo "<div class=\"alert alert-success\">
                       <button type=\"button\" class=\"close\" data-dismiss=\"alert\">&times;</button>
                    <strong>Succès :</strong> Le membre a été modifié avec succès.
                 </div>";
+               }
+               else
+               {
+                  echo "<div class=\"alert alert-success\">
+                      <button type=\"button\" class=\"close\" data-dismiss=\"alert\">&times;</button>
+                   <strong>Succès :</strong> Votre compte a été modifié avec succès.
+                </div>";
+               }
              }
          }
          else
@@ -174,7 +192,7 @@ if(isset($_POST['bouton-addfilm']))
          $verif = verifTable($bdd, "tp_film", $film_name , "id_film");
           if($verif == 1)
          {
-            addHisto($bdd,$id, $film_name, $date_film,$avis);
+            addHisto($bdd,checkTable($bdd, "tp_membre", "id_membre" , $_GET['id'], "id_fiche_perso"), $film_name, $date_film,$avis);
             $error_add = "<div class=\"alert alert-success\">
                   <button type=\"button\" class=\"close\" data-dismiss=\"alert\">&times;</button>
                <strong>Succès :</strong> Le film a été ajoutée avec succès.
@@ -197,11 +215,11 @@ if(isset($_POST['bouton-addfilm']))
    }
 }
 
-$members_list = getTableAll2($bdd, "tp_membre", $id , "id_membre", "id_membre", "tp_fiche_personne", "id_fiche_perso", "id_perso"); // Récupération des infos users
+$members_list = getTableAll2($bdd, "tp_membre", $id , "id_fiche_perso", "id_membre", "tp_fiche_personne", "id_fiche_perso", "id_perso"); // Récupération des infos users
 $countabo = countTable($bdd, "tp_abonnement");
 $abo_list = getTable($bdd, "tp_abonnement", 0, "id_abo", $countabo ); // Récupération de la liste d'abonnements
 $countfilms = countTable($bdd, "tp_historique_membre");
-$films_list = getTable($bdd, "tp_historique_membre WHERE id_membre =" . $id, 0, "date DESC", $countfilms ); // Récupération de la liste de films
+$films_list = getTable($bdd, "tp_historique_membre WHERE id_membre =" . checkTable($bdd, "tp_membre", "id_membre" , $_GET['id'], "id_fiche_perso"), 0, "date DESC", $countfilms ); // Récupération de la liste de films
 $countfilmshist = countTable($bdd, "tp_film");
 $films_hist = getTable($bdd, "tp_film", 0, "titre", $countfilmshist); // Récupération de la liste de films
 ?>
@@ -232,6 +250,7 @@ $films_hist = getTable($bdd, "tp_film", 0, "titre", $countfilmshist); // Récup�
          <label for="pays">Pays : </label>
             <input type="text" name="pays" id="pays" placeholder="Entrez un pays" value="<?php echo $members_list['0']['pays'];?>">
          <br>
+         <?php if(isset($_SESSION['id_job'])) { ?>
          <label for="abo">Abonnement: </label>
             <select id="abo" name="abo">
                <?php if(!empty($_POST['abo'])) { echo "<option value=\"" . abs(intval($_POST['abo'])) . "\">" . checkTable($bdd, "tp_abonnement", "nom" , $_POST['abo'], "id_abo") . "</option>"; }?>
@@ -248,6 +267,7 @@ $films_hist = getTable($bdd, "tp_film", 0, "titre", $countfilmshist); // Récup�
          <br>
          <label for="date_abo">Début d'abonnement *</label>
          <input type="text" name="date_abo" id="date_abo" placeholder="Date de début de l'abonnement" value="<?php echo $members_list['0']['date_abo'];?>">
+         <?php } ?>
          <em>Champs obligatoires * </em>
          <input type="submit" value="Modifier" name="bouton-add">
       </form>
@@ -461,7 +481,7 @@ if(isset($error_del)){echo $error_del;}
                   echo "<em class=\"empty\"> ‟" . substr(htmlentities($val['avis']),0,70) ."...”</em>"; 
                }
             }
-            echo "<a href=\"index.php?file=Avis&amp;avis=" . $val['id']. "\" style=\"visibility:hidden\" class=\"btn btn-primary avis-hist\" id=\"avis" . $val['id'] . "\" >Afficher</button>";
+            echo "<a href=\"index.php?file=Avis&amp;avis=" . $val['id'] . "\" style=\"visibility:hidden\" class=\"btn btn-primary avis-hist\" id=\"avis" . $val['id'] . "\" >Afficher</button>";
             echo "<a href=\"index.php?file=Profil&amp;id=" . $_GET['id'] . "&amp;del=" . $val['id']. "\" style=\"visibility:hidden\" class=\"btn btn-danger edit-hist\" id=\"film" . $val['id'] . "\" >Supprimer</button>";
             echo "</td>";
             echo "</tr>";

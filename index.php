@@ -23,7 +23,6 @@ while($file = readdir($folder)) {
 		$inc[] = $path['filename'];
 	}
 }
-
 foreach($inc as $val) {
 	if(!isset($_GET['file'])) {
 		include_once("inc/home.php");

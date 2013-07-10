@@ -1,7 +1,7 @@
 <?php
  
 if(!isset($_SESSION['id_job'])) {
-   header('Location: 404.php');
+   header('Location: index.php?file=404');
 }
 ?>
 <span class="btn btn-primary add" onClick="addabo('add');" >Ajouter une distribution</span>

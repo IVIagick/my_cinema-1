@@ -13,6 +13,8 @@ if(isset($_POST['bouton-connexion'])){
 		if(Connexion($bdd, htmlentities($_POST['mail']), $password) == 1)
 		{
 			$_SESSION['mail'] =  htmlentities($_POST['mail']);
+			$_SESSION['id'] = checkTable($bdd, "tp_fiche_personne", "id_perso", $_POST['mail'] , "email");
+			$_SESSION['id_membre'] = checkTable($bdd, "tp_membre", "id_membre", $_SESSION['id'] , "id_fiche_perso");
 			$mail = checkTable($bdd, "tp_fiche_personne", "id_perso", $_POST['mail'] , "email");
 			if(verifTable($bdd, "tp_personnel", $mail , "id_fiche_perso") == 1)
 			{

@@ -1,10 +1,6 @@
-<?php 
-if(!isset($_SESSION['id_job'])) {
-	header('Location: 404.php');
-}
-?>
-<span class="btn btn-primary add" onClick="addabo('add');" >Ajouter un membre</span>
-<?php
+<?php if(isset($_SESSION['id_job'])) { ?>
+<span class="btn btn-primary add" onClick="addabo('add');" >Ajouter un membre</span><?php } ?>
+<?php if(isset($_SESSION['id_job'])) { 
 // Suppression
 if(!empty($_GET['del']) && isset($_SESSION['id_job']))
 {
@@ -84,13 +80,13 @@ if(isset($_POST['bouton-add']) && isset($_SESSION['id_job']))
 			</div>";
 	}
 }
-
+}
 $members_list = getTable($bdd, "tp_membre", $page, $tri, $_SESSION['limit'] ); // Récupération de la liste de films
 $countabo = countTable($bdd, "tp_abonnement");
 $abo_list = getTable($bdd, "tp_abonnement", 0, "id_abo", $countabo ); // Récupération de la liste d'abonnements
 
 ?>
-			<label for="nom">Nom * :</label>
+		<?php if(isset($_SESSION['id_job'])) { ?>	<label for="nom">Nom * :</label>
 				<input type="text" name="nom" id="nom" placeholder="Entrez un nom" required value="<?php if(isset($_POST['nom'])){ echo $_POST['nom']; } ?>">
 			<br>
 			<label for="prenom">Prénom *: </label>
@@ -130,6 +126,7 @@ $abo_list = getTable($bdd, "tp_abonnement", 0, "id_abo", $countabo ); // Récup�
 			<input type="submit" value="Ajouter" name="bouton-add">
 		</form>
 	</div>
+	<?php } ?>
 <?php if(!isset($_POST['search-membre'])){ ?>
 <h5>Listes des membres</h5>
 <div class="nb-result">
@@ -149,10 +146,10 @@ $abo_list = getTable($bdd, "tp_abonnement", 0, "id_abo", $countabo ); // Récup�
 	<tr>
 		<th>Nom</th>
 		<th>Prenom</th>
-		<th>Mail</th>
+		<?php if(isset($_SESSION['id_job'])) { ?><th>Mail</th>
 		<th>Ville</th>
 		<th>Abonnement</th>
-		<th>Fin de l'abonnement</th>
+		<th>Fin de l'abonnement</th><?php } ?>
 		<th>Actions</th>
 	</tr>
 <?php
@@ -173,6 +170,7 @@ foreach($members_list as $val)
 	echo "<td>";
 	echo checkTable($bdd, "tp_fiche_personne", "prenom" , $val['id_fiche_perso'], "id_perso");
 	echo "</td>";
+	 if(isset($_SESSION['id_job'])) { 
 	echo "<td>";
 	echo checkTable($bdd, "tp_fiche_personne", "email" , $val['id_fiche_perso'], "id_perso");
 	echo "</td>";
@@ -185,10 +183,11 @@ foreach($members_list as $val)
 	echo "<td>";
 	echo $date_fin_abo;
 	echo "</td>";
+	}
 	echo "<td class=\"actions\">";
-	echo "
-		<a href=\"index.php?file=Profil&amp;id=" . $val['id_fiche_perso'] . "\" title=\"Accéder au profil\"><i class='icon-list-alt'></i></a>
-		<a href=\"index.php?file=ListMembres&amp;del=" . $val['id_membre'] . "\" title=\"\"><i class='icon-remove' ></i></a>";
+	if(isset($_SESSION['id_job'])) { $linkuser = ''; } else { $linkuser ='User';}
+	echo "<a href=\"index.php?file=Profil" . $linkuser . "&amp;id=" . $val['id_fiche_perso'] . "\" title=\"Accéder au profil\"><i class='icon-list-alt'></i></a>"; 
+	if(isset($_SESSION['id_job'])) { echo "<a href=\"index.php?file=ListMembres&amp;del=" . $val['id_membre'] . "\" title=\"\"><i class='icon-remove' ></i></a>"; }
 	echo "</td>";
 	echo "</tr>";
 	$i++;
@@ -276,8 +275,9 @@ else
 				{
 				   $img = "<img src=\"img/defautuser.png\" alt=\"avatar\">";
 				}
+				if(isset($_SESSION['id_job'])) { $linkuser = ''; } else { $linkuser ='User';}
 				?>
-				<a href="index.php?file=Profil&amp;id=<?php echo checkTable($bdd, "tp_membre", "id_membre", $nom['id_perso'] , "id_fiche_perso"); ?>" class="usersearch">	
+				<a href="index.php?file=Profil<?php echo $linkuser; ?>&amp;id=<?php echo checkTable($bdd, "tp_membre", "id_membre", $nom['id_perso'] , "id_fiche_perso"); ?>" class="usersearch">	
 						<?php echo $img; ?>
 						<?php echo "<p><strong>Nom</strong>: " . $nom['nom'] . "</p>";
 						echo "<p><strong>Prenom</strong> : " . $nom['prenom'] . "</p>";?>
@@ -302,8 +302,9 @@ else
 				{
 				   $img = "<img src=\"img/defautuser.png\" alt=\"avatar\">";
 				}
+				if(isset($_SESSION['id_job'])) { $linkuser = ''; } else { $linkuser ='User';}
 				?>
-				<a href="index.php?file=Profil&amp;id=<?php echo checkTable($bdd, "tp_membre", "id_membre", $prenom['id_perso'] , "id_fiche_perso"); ?>" class="usersearch">	
+				<a href="index.php?file=Profil<?php echo $linkuser; ?>&amp;id=<?php echo checkTable($bdd, "tp_membre", "id_membre", $prenom['id_perso'] , "id_fiche_perso"); ?>" class="usersearch">	
 						<?php echo $img; ?>
 						<?php echo "<p><strong>Nom</strong>: " . $prenom['nom'] . "</p>";
 						echo "<p><strong>Prenom</strong> : " . $prenom['prenom'] . "</p>";?>

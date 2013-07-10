@@ -143,6 +143,7 @@ $distrib_list = getTable($bdd, "tp_distrib", 0, "id_distrib", $countdistrib ); /
 </div>
 <table>
 	<tr>
+		<th>Jaquette</th>
 		<th>Titre</th>
 		<th>Genre</th>
 		<th>Distribution</th>
@@ -150,15 +151,26 @@ $distrib_list = getTable($bdd, "tp_distrib", 0, "id_distrib", $countdistrib ); /
 		<th>Année</th>
 		<th>Date de mise à l'affiche</th>
 		<th>Date de fin</th>
-		<?php if(isset($_SESSION['id_job'])) { ?><th class="actions">Actions</th><?php } ?>
+		<th class="actions">Actions</th>
 	</tr>
 <?php
 
 $i = 0;
 foreach($films_list as $val)
 {
+	if(file_exists("upload/img/film" . $val['id_film'] . ".png"))
+	{
+ 		$img = "<img src=\"upload/img/film" . $val['id_film'] . ".png\" alt=\"avatar\">";
+	}
+	else
+	{
+ 		$img = "<img src=\"img/filmdefaut.png\" alt=\"avatar\">";
+	}
 
 	if($i%2 == 0) { echo "<tr class=\"gris\">"; } else { echo "<tr>"; }
+	echo "<td class=\"img-film\">";
+	echo $img;
+	echo "</td>";
 	echo "<td>";
 	echo $val['titre'];
 	echo "</td>";
@@ -180,13 +192,12 @@ foreach($films_list as $val)
 	echo "<td>";
 	echo $val['date_fin_affiche'];
 	echo "</td>";
-	if(isset($_SESSION['id_job'])) { 
 	echo "<td>";
-	echo "<a href=\"#\" title=\"\"><i class='icon-pencil' ></i></a>
-		<a href=\"#\" title=\"\"><i class='icon-list-alt unset-button'></i></a>
-		<a href=\"index.php?file=ListFilms&amp;del=" . $val['id_film'] . "\" title=\"\"><i class='icon-remove' ></i></a>";
+	echo "<a href=\"index.php?file=Film&amp;id=" . $val['id_film'] . "\" title=\"\"><i class='icon-list-alt unset-button'></i></a>";
+	if(isset($_SESSION['id_job'])) { 
+		echo "<a href=\"index.php?file=ListFilms&amp;del=" . $val['id_film'] . "\" title=\"\"><i class='icon-remove' ></i></a>";
+		}
 	echo "</td>";
-	}
 	echo "</tr>";
 	$i++;
 }

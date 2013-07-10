@@ -1,12 +1,12 @@
 <?php
 
-if(!isset($_SESSION['id_job'])) {
-	header('Location: 404.php');
+if(!isset($_SESSION['id_job']) || empty($_GET['avis']) || verifTable($bdd, "tp_historique_membre", $_GET['avis'] , "id") == 0) {
+   if($_SESSION['id_membre'] != checkTable($bdd, "tp_historique_membre", "id_membre" ,$_GET['avis'], 'id'))
+   {
+      header('Location: index.php?file=404');
+   }
 }
-if(empty($_GET['avis']) || verifTable($bdd, "tp_historique_membre", $_GET['avis'] , "id") == 0 )
-{
-	header('Location: index.php?file=ListMembres');
-}
+
 $id_avis = abs(intval($_GET['avis']));
 $films_list = getTableAll2($bdd, "tp_historique_membre", $id_avis , "id", "id", "tp_film", "id_film", "id_film");
 
@@ -29,7 +29,7 @@ else
 
 ?><div class="sep"></div>
 <div class="avis-bloc">
-	<h5>Avis concernant le film <a href="index.php?file=Film&amp;id=<?php echo $films_list[0]['id_film']; ?>"><?php echo $films_list[0]['titre']; ?></a> par <a href="index.php?file=Profil&amp;id=<?php echo $films_list[0]['id_membre']; ?>"><?php echo checkTable($bdd, "tp_fiche_personne", "nom" , $films_list[0]['id_membre'], "id_perso"); ?></a></h5>
+	<h5>Avis concernant le film <a href="index.php?file=Film&amp;id=<?php echo $films_list[0]['id_film']; ?>"><?php echo $films_list[0]['titre']; ?></a></h5>
 	<div class="avis-left">
 		<?php echo $img; ?>
 	</div>
@@ -41,8 +41,8 @@ else
 			<p><strong>Avis sur le film :</strong></p>
 		</div>
 		<div class="info-right">
-		<p> <?php echo checkTable($bdd, "tp_fiche_personne", "nom" , $films_list[0]['id_membre'], "id_perso"); ?></p>
-		<p><?php echo $films_list[0]['titre']; ?></p>
+		<p> <a href="index.php?file=Profil&amp;id=<?php echo checkTable($bdd, "tp_membre", "id_fiche_perso" , $films_list[0]['id_membre'], "id_membre"); ?>"><?php  $id_perso = checkTable($bdd, "tp_membre", "id_fiche_perso" , $films_list[0]['id_membre'], "id_membre"); echo checkTable($bdd, "tp_fiche_personne", "nom" , $id_perso, "id_perso"); ?></a></p>
+		<p><a href="index.php?file=Film&amp;id=<?php echo $films_list[0]['id_film']; ?>"><?php echo $films_list[0]['titre']; ?></a></p>
 		<p><?php echo $films_list[0]['date']; ?></p>
 		<p><div class="avis-em" id="bloc-em"  onClick="avis('bloc-text','avis-em');"><?php echo "<em id=\"avis-em\">‟" . $films_list[0]['avis'] ."”</em>"; ?>
 			<div id="bloc-text" style="display:none">
