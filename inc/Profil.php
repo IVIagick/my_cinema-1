@@ -9,7 +9,7 @@ if(!isset($_SESSION['id_job'])) {
 
 if (isset($_GET['id']))
 {
-   $id = $_GET['id'];
+   $id = abs(intval($_GET['id']));
    $user = checkTable($bdd, "tp_membre", "id_fiche_perso", $id , "id_fiche_perso");
    if ( empty($user) )
    {
@@ -35,6 +35,19 @@ $films_list = getTable($bdd, "tp_historique_membre WHERE id_membre =" . checkTab
 // Modification
 if(isset($_POST['bouton-add']))
 {
+   if(isset($_SESSION['id_job']) && $_SESSION['id_job'] != 3) 
+   {
+      $tab_perso = checkTableAll($bdd, "tp_personnel", "id_fiche_perso");
+      foreach ($tab_perso as $key => $value) {
+        if($value['id_fiche_perso'] == $id && $value['id_fiche_perso'] != $_SESSION['id']) {
+
+        echo $error = "<div class=\"alert alert-error\">
+                      <button type=\"button\" class=\"close\" data-dismiss=\"alert\">&times;</button>
+                   <strong>Erreur :</strong> Vous n'avez pas les droits nécessaires.
+                </div>";
+             }
+      }
+   }
 
    if(!empty($_POST['nom']) && isset($_POST['prenom']) && isset($_POST['mail']))
    {
@@ -49,6 +62,7 @@ if(isset($_POST['bouton-add']))
             $date_naissance= htmlentities($_POST['date_naissance']);
             $adresse= htmlentities($_POST['adresse']);
             $cpostal= htmlentities($_POST['cpostal']);
+            $date_abo= htmlentities($_POST['abo']);
             if(!empty($_POST['password'])) { $password = MD5(SHA1($_POST['password'])); } else { $password = $members_list['0']['password'];};
             $ville= htmlentities($_POST['ville']);
             if(!empty($_POST['abo'])){ if($date_abo == "0000-00-00 00:00:00" || $date_abo == ""){
@@ -135,7 +149,7 @@ if(isset($_POST['bouton-edit']))
             if(empty($error))
             {
                 editHistoFilm($bdd, $old_name,$film_name,$date_film);
-                $error = "<div class=\"alert alert-success\">
+                $error_mod = "<div class=\"alert alert-success\">
                       <button type=\"button\" class=\"close\" data-dismiss=\"alert\">&times;</button>
                    <strong>Succès :</strong> L'historique a été modifié avec succès.
                 </div>";
@@ -143,7 +157,7 @@ if(isset($_POST['bouton-edit']))
       }
       else
       {
-         $error = "<div class=\"alert alert-error\" >
+         $error_mod = "<div class=\"alert alert-error\" >
                <button type=\"button\" class=\"close\" data-dismiss=\"alert\">&times;</button>
             <strong>Erreur :</strong> Ce film n'existe pas.
          </div>";
@@ -151,7 +165,7 @@ if(isset($_POST['bouton-edit']))
    }
    else
    {
-      $error = "<div class=\"alert alert-error\">
+      $error_mod = "<div class=\"alert alert-error\">
                <button type=\"button\" class=\"close\" data-dismiss=\"alert\">&times;</button>
             <strong>Erreur :</strong> Merci de remplir les champs obligatoires.
          </div>";
@@ -274,7 +288,7 @@ $films_hist = getTable($bdd, "tp_film", 0, "titre", $countfilmshist); // Récup�
    </div>
 <?php
 
-if(file_exists("../upload/img/user" . $id . ".png"))
+if(file_exists("upload/img/user" . $id . ".png"))
 {
    $img = "<img src=\"upload/img/user" . $id . ".png\" alt=\"avatar\">";
 }
@@ -316,7 +330,7 @@ if(isset($error_del)){echo $error_del;}
          echo "<th class=\"th\">";
          echo "Avatar : ";
          echo "</th>";
-         echo "<td>";
+         echo "<td class=\"avatar-profil\">";
          echo $img ;
          echo "</td>";
          echo "</tr>";
@@ -438,18 +452,18 @@ if(isset($error_del)){echo $error_del;}
                </form>";
          echo "</th>";
          echo "<th>";
-         if(isset($error)){echo $error;}
+         if(isset($error_mod)){echo $error_mod;}
          echo "<form class=\"td-edit\" method=\"POST\">
          <label>Remplacer</label>
                   <select name=\"oldname\">";
                   foreach($films_list as $val){
-                     echo "<option  value=\"" . $val['id'] . "\">". substr($val['date'],0,10) . " - " . checkTable($bdd, "tp_film", "titre" , $val['id_film'], "id_film") . "</option>";
+                     echo "<option  value=\"" . $val['id'] . "\">". substr($val['date'],0,10) . " - " . checkTable($bdd, "tp_film", "titre" , $val['id_film'], "id_film") . "</option>\n\n";
                             }
                 echo  "</select>
                  <label>par</label>
                 <select name=\"filmname\" >";
                   foreach($films_hist as $val){
-                     echo "<option class=\"select-table\" value=\"" . $val['id_film'] . "\">" . $val['titre'] . "</option>";
+                     echo "<option class=\"select-table\" value=\"" . $val['id_film'] . "\">" . $val['titre'] . "</option>\n\n";
                             }
                 echo  "</select>
                 <input type=\"date\" name=\"datefilm\">
@@ -481,8 +495,8 @@ if(isset($error_del)){echo $error_del;}
                   echo "<em class=\"empty\"> ‟" . substr(htmlentities($val['avis']),0,70) ."...”</em>"; 
                }
             }
-            echo "<a href=\"index.php?file=Avis&amp;avis=" . $val['id'] . "\" style=\"visibility:hidden\" class=\"btn btn-primary avis-hist\" id=\"avis" . $val['id'] . "\" >Afficher</button>";
-            echo "<a href=\"index.php?file=Profil&amp;id=" . $_GET['id'] . "&amp;del=" . $val['id']. "\" style=\"visibility:hidden\" class=\"btn btn-danger edit-hist\" id=\"film" . $val['id'] . "\" >Supprimer</button>";
+            echo "<a href=\"index.php?file=Avis&amp;avis=" . $val['id'] . "\" style=\"visibility:hidden\" class=\"btn btn-primary avis-hist\" id=\"avis" . $val['id'] . "\" >Afficher</a>\n\n";
+            echo "<a href=\"index.php?file=Profil&amp;id=" . $_GET['id'] . "&amp;del=" . $val['id']. "\" style=\"visibility:hidden\" class=\"btn btn-danger edit-hist\" id=\"film" . $val['id'] . "\" >Supprimer</a>";
             echo "</td>";
             echo "</tr>";
          }

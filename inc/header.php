@@ -39,14 +39,16 @@
 		</div>
 		<div class="menu container">
 			<div class="sub-menu">
-				<ul class="nav">
+				<ul class="nav <?php if(isset($_SESSION['id_job']) && $_SESSION['id_job'] == 3){ echo "nav-admin";} ?>">
 					<li id="l-li" <?php if((isset($_GET['file']) && ($_GET['file'] == 'home' || $_GET['file'] == '')) || empty($_GET['file']) || !isset($_GET['file'])){ echo "class=\"active\""; }?> ><a href="index.php?file=home">Accueil</a></li>
 					<li <?php if(isset($_GET['file']) && $_GET['file'] == 'ListFilms'){ echo "class=\"active\""; }?>><a href="index.php?file=ListFilms">Les Films</a></li>
 					<?php if(isset($_SESSION['id_job'])) { ?><li <?php if(isset($_GET['file']) && $_GET['file'] == 'ListAbo'){ echo "class=\"active\""; }?>><a href="index.php?file=ListAbo">Les Abonnements</a></li><?php } ?>
 					<li <?php if(isset($_GET['file']) && $_GET['file'] == 'ListReducs'){ echo "class=\"active\""; }?>><a href="index.php?file=ListReducs">Les Reductions</a></li>
 					<?php if(isset($_SESSION['id_job'])) { ?><li <?php if(isset($_GET['file']) && $_GET['file'] == 'ListDistrib'){ echo "class=\"active\""; }?>><a href="index.php?file=ListDistrib">Les Distributions</a></li><?php } ?>
 					<li <?php if(isset($_GET['file']) && $_GET['file'] == 'ListGenre'){ echo "class=\"active\""; }?>><a href="index.php?file=ListGenre">Les Genres</a></li>
+					<?php if(isset($_SESSION['id_job']) && $_SESSION['id_job'] == 3) { ?><li <?php if(isset($_GET['file']) && $_GET['file'] == 'ListPersonnel'){ echo "class=\"active\""; }?>><a href="index.php?file=ListPersonnel">Le personnel</a></li><?php } ?>
 					<li id="r-li" <?php if(isset($_GET['file']) && $_GET['file'] == 'ListMembres'){ echo "class=\"active\""; }?>><a href="index.php?file=ListMembres">Les Membres</a></li>
+
 				</ul>
 			</div>
 			<div class="body-complete">

@@ -70,12 +70,35 @@ function getTableAll2($bdd, $table, $id , $name_where, $tri, $join, $tabjoin1, $
 	return $tabres;
 }
 
+function getAll($bdd, $table, $tri, $join, $tabjoin1, $tabjoin2) {
+	$resultat = mysqli_query($bdd, "SELECT * FROM $table LEFT JOIN $join ON $table.$tabjoin1 = $join.$tabjoin2 ");
+	$tabres = array();
+	while($row = mysqli_fetch_assoc($resultat))
+	{
+   		$tabres[] = $row;
+	}
+	mysqli_free_result($resultat);
+	return $tabres;
+}
+
 function checkTable($bdd, $table, $name, $id , $name_where)
 {
 	$resultat = mysqli_query($bdd, "SELECT $name FROM $table WHERE $name_where = \"$id\" LIMIT 1");
 	$row = mysqli_fetch_assoc($resultat);
 	mysqli_free_result($resultat);
 	return $row[$name];
+}
+
+function checkTableAll($bdd, $table, $name)
+{
+	$resultat = mysqli_query($bdd, "SELECT $name FROM $table ");
+	$tabres = array();
+	while($row = mysqli_fetch_assoc($resultat))
+	{
+		$tabres[] = $row;
+	}
+	mysqli_free_result($resultat);
+	return $tabres;
 }
 
 
@@ -255,6 +278,22 @@ function addDistrib($bdd, $nom, $telephone, $adresse, $ville, $pays, $cpostal){
 	$id = maxTable($bdd, "tp_distrib", "id_distrib") + 1;
 	$req = mysqli_prepare($bdd, 'INSERT INTO tp_distrib(id_distrib,nom, telephone, adresse, cpostal, ville, pays) VALUES (?,?, ?, ?, ?, ?, ?)');
 	mysqli_stmt_bind_param($req, "isisiss",$id, $nom, $telephone, $adresse, $cpostal, $ville,$pays );
+	mysqli_stmt_execute($req);
+}
+
+//Personnel
+
+function addPersonnel($bdd, $id_job ,$id_fiche_perso, $horraire, $date_recrutement){
+	$id = maxTable($bdd, "tp_personnel", "id_personnel") + 1;
+	$req = mysqli_prepare($bdd, 'INSERT INTO tp_personnel(id_personnel,id_fiche_perso,id_job, horraire, date_recrutement) VALUES (?,?, ?, ?,?)');
+	mysqli_stmt_bind_param($req, "iiiss",$id, $id_fiche_perso, $id_job, $horraire, $date_recrutement);
+	mysqli_stmt_execute($req);
+}
+
+
+function editPersonnel($bdd, $id_job ,$horraire, $date_recrutement, $id){
+	$req = mysqli_prepare($bdd, 'UPDATE tp_personnel SET  id_job = ?, horraire = ?, date_recrutement = ? WHERE id_fiche_perso = ?');
+	mysqli_stmt_bind_param($req, "issi", $id_job, $horraire, $date_recrutement, $id);
 	mysqli_stmt_execute($req);
 }
 

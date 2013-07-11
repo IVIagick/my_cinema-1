@@ -121,9 +121,7 @@ foreach($reducs_list as $val)
 	echo "</td>";
 	 if(isset($_SESSION['id_job'])) { 
 	echo "<td>";
-	echo "<a href=\"#\" title=\"\"><i class='icon-pencil' ></i></a>
-		<a href=\"#\" title=\"\"><i class='icon-list-alt unset-button'></i></a>
-		<a href=\"index.php?file=ListReducs&amp;del=" . $val['id_reduction'] . "\"><i class='icon-remove' ></i></a>";
+	echo "<a href=\"index.php?file=ListReducs&amp;del=" . $val['id_reduction'] . "\"><i class='icon-remove' ></i></a>";
 	echo "</td>";
 	}
 	echo "</tr>";

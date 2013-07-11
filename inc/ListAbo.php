@@ -122,9 +122,7 @@ foreach($abo_list as $val)
 	echo $val['duree_abo'];
 	echo "</td>";
 	echo "<td>";
-	echo "<a href=\"#\" title=\"\"><i class='icon-pencil' ></i></a>
-		<a href=\"#\" title=\"\"><i class='icon-list-alt unset-button'></i></a>
-		<a href=\"index.php?file=ListAbo&amp;del=" . $val['id_abo'] . "\" title=\"\"><i class='icon-remove' ></i></a>";
+	echo "<a href=\"index.php?file=ListAbo&amp;del=" . $val['id_abo'] . "\" title=\"\"><i class='icon-remove' ></i></a>";
 	echo "</td>";
 	echo "</tr>";
 	$i++;

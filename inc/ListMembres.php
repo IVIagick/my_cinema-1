@@ -8,6 +8,8 @@ if(!empty($_GET['del']) && isset($_SESSION['id_job']))
 	if($verif == 1 && preg_match("/-/", $_GET['del']) == 0)
 	{
 			delTable($bdd, "tp_membre" , $_GET['del'], "id_membre");
+			$id_perso = checkTable($bdd, "tp_membre", "id_fiche_perso", $_GET['del'] , "id_fiche_perso");
+			delTable($bdd, "tp_fiche_personne" , $id_perso, "id_perso");
 			echo "<div class=\"alert alert-success\" >
    					<button type=\"button\" class=\"close\" data-dismiss=\"alert\">&times;</button>
     				<strong>Succès :</strong> Le membre a été supprimé avec succès.
@@ -137,13 +139,14 @@ $abo_list = getTable($bdd, "tp_abonnement", 0, "id_abo", $countabo ); // Récup�
 	</form>
 </div>
 <div class="nb-result search-membre">
-	<form class="navbar-form pull-left search-bar" method="POST" action="">
+	<form class="navbar-form pull-left search-bar" method="POST" >
   		<input class="span2" id="appendedInputButton2" name="search-membre" type="text" placeholder="Rechercher">
   		<button type="submit" class="btn recherche-btn" name="search-membre-bouton"><i class="icon-search"></i></button>
 	</form>
 </div>	
 <table>
 	<tr>
+		<th>Photo</th>
 		<th>Nom</th>
 		<th>Prenom</th>
 		<?php if(isset($_SESSION['id_job'])) { ?><th>Mail</th>
@@ -157,6 +160,14 @@ $abo_list = getTable($bdd, "tp_abonnement", 0, "id_abo", $countabo ); // Récup�
 $i = 0;
 foreach($members_list as $val)
 {
+	if(file_exists("upload/img/user" . $val['id_fiche_perso'] . ".png"))
+	{
+ 		$img = "<img src=\"upload/img/user" . $val['id_fiche_perso'] . ".png\" alt=\"avatar\">";
+	}
+	else
+	{
+ 		$img = "<img src=\"img/defautuser2.png\" alt=\"avatar\">";
+	}
 	$nbj_abo = checkTable($bdd, "tp_abonnement", "duree_abo" , $val['id_abo'], "id_abo"); // Durée de l'abonnement
 	$date_abo = $val['date_abo']; // Date de l'abonnement
 	$an=substr($date_abo,0,4); // Découpage de la date - annee
@@ -164,6 +175,9 @@ foreach($members_list as $val)
 	$jour=substr($date_abo,8,2); // Découpage de la date - jours
 	$date_fin_abo = date("d-m-Y", mktime(0, 0, 0, $mois, $jour+$nbj_abo, $an)); // Date de fin de l'abonnement
 	if($i%2 == 0) { echo "<tr class=\"gris\">"; } else { echo "<tr>"; }
+	echo "<td class=\"img-film\">";
+	echo $img;
+	echo "</td>";
 	echo "<td>";
 	echo checkTable($bdd, "tp_fiche_personne", "nom" , $val['id_fiche_perso'], "id_perso");
 	echo "</td>";
@@ -267,7 +281,7 @@ else
 			echo "<h6>Recherche par nom</h6>";
 			foreach($user as $nom){
 				// Récupération avatar
-				if(file_exists("../upload/img/user" . $nom['id_perso'] . ".png"))
+				if(file_exists("upload/img/user" . $nom['id_perso'] . ".png"))
 				{
   					$img = "<img src=\"upload/img/user" . $nom['id_perso'] . ".png\" alt=\"avatar\">";
 				}
@@ -294,7 +308,7 @@ else
 			echo "<h6>Recherche par prenom</h6>";
 			foreach($user2 as $prenom){
 				// Récupération avatar
-				if(file_exists("../upload/img/user" . $prenom['id_perso'] . ".png"))
+				if(file_exists("upload/img/user" . $prenom['id_perso'] . ".png"))
 				{
   					$img = "<img src=\"upload/img/user" . $prenom['id_perso'] . ".png\" alt=\"avatar\">";
 				}

@@ -152,9 +152,7 @@ foreach($distrib_list as $val)
 	echo $val['pays'];
 	echo "</td>";
 	echo "<td>";
-	echo "<a href=\"#\" title=\"\"><i class='icon-pencil' ></i></a>
-		<a href=\"#\" title=\"\"><i class='icon-list-alt unset-button'></i></a>
-		<a href=\"index.php?file=ListDistrib&amp;del=" . $val['id_distrib'] . "\" title=\"\"><i class='icon-remove' ></i></a>";
+	echo "<a href=\"index.php?file=ListDistrib&amp;del=" . $val['id_distrib'] . "\" title=\"\"><i class='icon-remove' ></i></a>";
 	echo "</td>";
 	echo "</tr>";
 	$i++;
